@@ -25,6 +25,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _heightTextEditController = TextEditingController();
   final _weightTextEditController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int height, weight;
 
   @override
@@ -40,42 +41,77 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('비만도 계산기'),
       ),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 20,
+      body: Container(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _heightTextEditController,
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return '키를 입력하세요.';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: '키를 입력하세요',
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (text) {
+                  print(text);
+                },
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: _weightTextEditController,
+                validator: (value) {
+                  if (value.trim().isEmpty) {
+                    return '몸무게를 입력하세요.';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: '몸무게를 입력하세요',
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (text) {
+                  print(text);
+                },
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              buildRaisedButton(context),
+              SizedBox(
+                height: 20,
+              ),
+
+
+
+            ],
           ),
-          TextField(
-            controller: _heightTextEditController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: '키를 입력하세요',
-            ),
-            onChanged: (text) {
-              print(text);
-            },
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          TextField(
-            controller: _weightTextEditController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: '몸무게를 입력하세요',
-            ),
-            onChanged: (text) {
-              print(text);
-            },
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          RaisedButton(
-            child: Text('결과'),
-            color: Colors.blue,
-            textColor: Colors.white,
-            onPressed: () {
+
+        ),
+      )
+    );
+  }
+
+  RaisedButton buildRaisedButton(BuildContext context) {
+    return RaisedButton(
+          child: Text('결과'),
+          color: Colors.blue,
+          textColor: Colors.white,
+          // ignore: missing_return
+          onPressed: () {
+            if(_formKey.currentState.validate()) {
               print(_heightTextEditController.text);
               print(_weightTextEditController.text);
 
@@ -83,28 +119,20 @@ class _MyHomePageState extends State<MyHomePage> {
               weight = int.parse(_weightTextEditController.text);
 
 
-              return showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      content: Text(
-                          '키 : ' + _heightTextEditController.text +
-                          '\n몸무게 : '  + _weightTextEditController.text +
-                          '\nBMI : ' + (weight / pow(height / 100, 2)).toStringAsFixed(2).toString()
+                return showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Text(
+                            '키 : ' + _heightTextEditController.text +
+                                '\n몸무게 : '  + _weightTextEditController.text +
+                                '\nBMI : ' + (weight / pow(height / 100, 2)).toStringAsFixed(2).toString()
 
-                      ),
-                    );
-                  });
-            },
-          ),
-          SizedBox(
-            height: 20,
-          ),
-
-
-
-        ],
-      )
-    );
+                        ),
+                      );
+                    });
+              }
+          },
+        );
   }
 }
