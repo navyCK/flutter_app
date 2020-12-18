@@ -27,6 +27,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final _weightTextEditController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int height, weight;
+  double bmi;
+  String result, image;
 
   @override
   void dispose() {
@@ -117,18 +119,68 @@ class _MyHomePageState extends State<MyHomePage> {
 
               height = int.parse(_heightTextEditController.text);
               weight = int.parse(_weightTextEditController.text);
+              bmi = weight / pow(height / 100, 2);
+
+              if (bmi >= 35) {
+                result = '고도 비만';
+              } else if (bmi > 25) {
+                result = '비만';
+              } else if  (bmi > 23) {
+                result = '과체중';
+              } else if (bmi > 18.5) {
+                result = '정상';
+              } else {
+                result = '저체중';
+              }
+
+              if (result == '정상') {
+                image = 'images/shy.png';
+              } else if (result == '저체중') {
+                image = 'images/crying.png';
+              } else if (result == '과체중') {
+                image = 'images/no_expression.png';
+              } else if (result == '비만') {
+                image = 'images/angry.png';
+              } else {
+                image = 'images/devil.png';
+              }
 
 
-                return showDialog(
+              return showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0)
+                        ),
+                        title: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            new Text("BMI 결과"),
+                            SizedBox(
+                              height: 40,
+                            ),
+                            Image.asset(
+                              image,
+                              width: 50,
+                              height: 50,
+                            ),
+                          ],
+                        ),
                         content: Text(
                             '키 : ' + _heightTextEditController.text +
                                 '\n몸무게 : '  + _weightTextEditController.text +
-                                '\nBMI : ' + (weight / pow(height / 100, 2)).toStringAsFixed(2).toString()
+                                '\nBMI : ' + bmi.toStringAsFixed(2).toString() +
+                                '\n비만도 계산 결과 : ' + result
 
                         ),
+                        actions: <Widget>[
+                          new FlatButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                },
+                              child: new Text("확인"))
+                        ],
                       );
                     });
               }
