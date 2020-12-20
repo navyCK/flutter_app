@@ -8,7 +8,7 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="비만도 계산기"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/shy">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
